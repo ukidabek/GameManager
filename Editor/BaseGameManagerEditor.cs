@@ -25,8 +25,6 @@ namespace BaseGameLogic
 		private void OnEnable()
 		{
 			_gameManagerInstance = target as BaseGameManager;
-
-			_managerAttribute.AddRange(AssemblyExtension.GetAllFieldsWithAttribute(_gameManagerInstance.GetType(), typeof(ManagerAttribute), true));
 		}
 
 		public override void OnInspectorGUI ()
@@ -43,22 +41,6 @@ namespace BaseGameLogic
 				if (GUILayout.Button ("Play")) 
 				{
 					_gameManagerInstance.ResumeGame ();
-				}
-			}
-
-			foreach (FieldInfo item in _managerAttribute)
-			{
-				ManagerAttribute managerAttribute = item.GetCustomAttributes(false).First(attribute => attribute.GetType() == typeof(ManagerAttribute)) as ManagerAttribute;
-				if(item.GetValue(_gameManagerInstance).Equals(null))
-				{
-					if(managerAttribute.IsNecessary)
-					{
-						EditorGUILayout.HelpBox(string.Format("Manager of type {0} doesn't exist and it necessary!", managerAttribute.ManagerType.Name), MessageType.Error);
-					}
-					else
-					{
-						EditorGUILayout.HelpBox(string.Format("Manager of type {0} doesn't exist. Some feathers wont work.", managerAttribute.ManagerType.Name), MessageType.Warning);
-					}
 				}
 			}
 		}

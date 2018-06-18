@@ -16,24 +16,25 @@ namespace BaseGameLogic.Management
 	{
 		public InitializeObjects ObjectInitializationCallBack = new InitializeObjects();
 
-		[SerializeField]
-		private GameStatusEnum _gameStatus = GameStatusEnum.Play;
+        [SerializeField] private GameObject[] managersList = null;
+
+		[SerializeField] private GameStatusEnum _gameStatus = GameStatusEnum.Play;
 		public GameStatusEnum GameStatus { get { return this._gameStatus; } }
+
+        private ITimeManager _timeManager = null;
 
         protected virtual void CreateManagersInstance()
 		{
-            List<FieldInfo> managersPrefabFields = AssemblyExtension.GetAllFieldsWithAttribute(this.GetType(), typeof(ManagerAttribute), true);
-            foreach (FieldInfo managerPrefabField in managersPrefabFields)
-			{
-				object managerObject = managerPrefabField.GetValue(this);
-				GameObject gameObject = managerObject as GameObject;
-				if(gameObject != null)
-                {
-					var instance = gameObject.CreateInstance(transform);
-                    IInitialize initialize = instance.GetComponentInChildren<IInitialize>();
-                    if(initialize != null) ObjectInitializationCallBack.AddListener(initialize.Initialize);
-                }
-			}
+            for (int i = 0; i < managersList.Length; i++)
+            {
+                var instance = GameObject.Instantiate(managersList[i], transform);
+                IInitialize initialize = instance.GetComponentInChildren<IInitialize>();
+                if(_timeManager == null)
+                    _timeManager = instance.GetComponentInChildren<ITimeManager>();
+                if (initialize != null)
+                    ObjectInitializationCallBack.AddListener(initialize.Initialize);
+
+            }
 		}
 
 		protected virtual void InitializeOtherObjects()
@@ -66,6 +67,8 @@ namespace BaseGameLogic.Management
 		public virtual void PauseGame()
 		{
 			_gameStatus = GameStatusEnum.Pause;
+            if (_timeManager != null)
+                _timeManager.Factor = 0f;
         }
 
         public void LoadGame()
@@ -76,6 +79,8 @@ namespace BaseGameLogic.Management
         public virtual void ResumeGame()
 		{
 			_gameStatus = GameStatusEnum.Play;
+            if (_timeManager != null)
+                _timeManager.Factor = 1f;
         }
     }
 
