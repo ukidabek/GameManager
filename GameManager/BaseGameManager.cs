@@ -2,17 +2,13 @@
 using UnityEngine.Events;
 
 using System;
-using System.Reflection;
-using System.Collections;
-using System.Collections.Generic;
 
 using BaseGameLogic.Singleton;
-using BaseGameLogic.Inputs;
-using BaseGameLogic.TimeManagement;
+using BaseGameLogic.Management.Interfaces;
 
 namespace BaseGameLogic.Management
 {
-	public class BaseGameManager : Singleton<BaseGameManager> 
+	public class GameManager : Singleton<GameManager> 
 	{
 		public InitializeObjects ObjectInitializationCallBack = new InitializeObjects();
 
@@ -31,9 +27,9 @@ namespace BaseGameLogic.Management
                 IInitialize initialize = instance.GetComponentInChildren<IInitialize>();
                 if(_timeManager == null)
                     _timeManager = instance.GetComponentInChildren<ITimeManager>();
+
                 if (initialize != null)
                     ObjectInitializationCallBack.AddListener(initialize.Initialize);
-
             }
 		}
 
@@ -84,5 +80,5 @@ namespace BaseGameLogic.Management
         }
     }
 
-	[Serializable] public class InitializeObjects : UnityEvent<BaseGameManager> {}
+	[Serializable] public class InitializeObjects : UnityEvent<GameManager> {}
 }

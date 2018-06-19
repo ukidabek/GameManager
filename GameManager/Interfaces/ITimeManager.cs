@@ -1,4 +1,4 @@
-﻿namespace BaseGameLogic.Management
+﻿namespace BaseGameLogic.Management.Interfaces
 {
     public interface ITimeManager
     {

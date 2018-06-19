@@ -3,28 +3,25 @@ using UnityEditor;
 
 using System.Collections.Generic;
 using System.Reflection;
-using System.Linq;
 
-using BaseGameLogic.Management;
-
-namespace BaseGameLogic
+namespace BaseGameLogic.Management
 {
-	[CustomEditor(typeof(BaseGameManager), true)]
+	[CustomEditor(typeof(GameManager), true)]
 	public class BaseGameManagerEditor : Editor 
 	{
 		private List<FieldInfo> _managerAttribute = new List<FieldInfo>();
 		
         [MenuItem("BaseGameLogic/GameManager")]
-        public static BaseGameManager CreateInputCollectorManager()
+        public static GameManager CreateInputCollectorManager()
         {
-            return GameObjectExtension.CreateInstanceOfAbstractType<BaseGameManager>();
+            return GameObjectExtension.CreateInstanceOfAbstractType<GameManager>();
         }
 
-        private BaseGameManager _gameManagerInstance = null;
+        private GameManager _gameManagerInstance = null;
 
 		private void OnEnable()
 		{
-			_gameManagerInstance = target as BaseGameManager;
+			_gameManagerInstance = target as GameManager;
 		}
 
 		public override void OnInspectorGUI ()
