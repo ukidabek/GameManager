@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
 
-using System.Collections;
-
 using BaseGameLogic.Singleton;
 using BaseGameLogic.Management.Interfaces;
 
