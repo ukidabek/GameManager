@@ -5,6 +5,8 @@ using System;
 
 using BaseGameLogic.Singleton;
 using BaseGameLogic.Management.Interfaces;
+using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 namespace BaseGameLogic.Management
 {
@@ -25,11 +27,11 @@ namespace BaseGameLogic.Management
             {
                 var instance = GameObject.Instantiate(managersList[i], transform);
                 IInitialize initialize = instance.GetComponentInChildren<IInitialize>();
-                if(_timeManager == null)
-                    _timeManager = instance.GetComponentInChildren<ITimeManager>();
-
                 if (initialize != null)
                     ObjectInitializationCallBack.AddListener(initialize.Initialize);
+
+                if(_timeManager == null)
+                    _timeManager = instance.GetComponentInChildren<ITimeManager>();
             }
 		}
 
@@ -48,10 +50,23 @@ namespace BaseGameLogic.Management
 
 			CreateManagersInstance ();
 
+            GatherObjectToInitialize();
+
             Cursor.visible = false;
         }
 
-		protected virtual void Update()
+        private void GatherObjectToInitialize()
+        {
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+            {
+                var rootObjects = SceneManager.GetSceneAt(i).GetRootGameObjects();
+                for (int j = 0; j < rootObjects.Length; j++)
+                    foreach (var item in rootObjects[j].GetComponents<IInitialize>())
+                        ObjectInitializationCallBack.AddListener(item.Initialize);
+            }
+        }
+
+        protected virtual void Update()
 		{
             if(_gameStatus != GameStatusEnum.Loading)
             {
